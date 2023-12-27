@@ -182,7 +182,7 @@ function getCookie() {
   };
 }
 
-getCode();
+// getCode();
 getCookie();
 </script>
 

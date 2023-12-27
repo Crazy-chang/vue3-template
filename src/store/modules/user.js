@@ -10,8 +10,8 @@ const useUserStore = defineStore(
       id: '',
       name: '',
       avatar: '',
-      roles: [],
-      permissions: []
+      roles: [], // 角色权限
+      permissions: [] // 操作权限
     }),
     actions: {
       // 登录

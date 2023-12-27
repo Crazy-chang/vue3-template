@@ -24,30 +24,31 @@ router.beforeEach((to, from, next) => {
     } else if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      console.log("哈哈",useUserStore().roles)
+      console.log("useUserStore().roles==",useUserStore().roles)
       if (useUserStore().roles.length === 0) {
         isRelogin.show = true
 
-        useUserStore().getInfoTest()
-
-        // 判断当前用户是否已拉取完user_info信息
+        
+        // 判断当前用户是否已拉取完user_info信息，同时获取角色和操作权限
         // useUserStore().getInfo().then(() => {
-        //   isRelogin.show = false
-        //   usePermissionStore().generateRoutes().then(accessRoutes => {
-        //     // 根据roles权限生成可访问的路由表
-        //     accessRoutes.forEach(route => {
-        //       if (!isHttp(route.path)) {
-        //         router.addRoute(route) // 动态添加可访问路由表
-        //       }
-        //     })
-        //     next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
-        //   })
-        // }).catch(err => {
-        //   useUserStore().logOut().then(() => {
-        //     ElMessage.error(err)
-        //     next({ path: '/' })
-        //   })
-        // })
+        useUserStore().getInfoTest().then(() => {
+          isRelogin.show = false
+          usePermissionStore().generateRoutes().then(accessRoutes => {
+            // 根据roles权限生成可访问的路由表
+            accessRoutes.forEach(route => {
+              if (!isHttp(route.path)) {
+                router.addRoute(route) // 动态添加可访问路由表
+              }
+            })
+            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
+          })
+        }).catch(err => {
+          useUserStore().logOut().then(() => {
+            ElMessage.error(err)
+            next({ path: '/' })
+          })
+        })
+
       } else {
         next()
       }
